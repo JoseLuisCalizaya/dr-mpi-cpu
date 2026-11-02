@@ -1,0 +1,64 @@
+# SPDX-FileCopyrightText: Intel Corporation
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+# ─── Build artifacts ────────────────────────────────────────────────
+build/
+_build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+*.ninja
+*.ninja_deps
+*.ninja_log
+compile_commands.json
+
+# ─── Compiled / binary outputs ──────────────────────────────────────
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.out
+*.exe
+*.dll
+
+# ─── Python ─────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*egg-info/
+dist/
+*.egg
+venv/
+.venv/
+env/
+.env/
+.mypy_cache/
+.ruff_cache/
+
+# ─── Editor / IDE ────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+._*
+Thumbs.db
+
+# ─── Logs / Temporales ──────────────────────────────────────────────
+*.log
+*.tmp
+*.bak
+
+# ─── Benchmark / experiment outputs locales ─────────────────────────
+# Descomentar si NO quieres subir los resultados:
+# results/
+
+# ─── Dependencias descargadas por CMake FetchContent ────────────────
+_deps/

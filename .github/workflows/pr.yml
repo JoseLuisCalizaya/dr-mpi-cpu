@@ -1,0 +1,219 @@
+# SPDX-FileCopyrightText: Intel Corporation
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: "PR Tests"
+permissions: read-all
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+
+jobs:
+  checks:
+    runs-on: intel-ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - name: Ubuntu dependencies
+      run: scripts/install-doxygen.sh
+    - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+    - name: Install python dependencies
+      run: pip install -r requirements.txt
+    - name: Run checkers
+      run: pre-commit run --all
+
+# disabled due to DRA-163
+#  unit_tests:
+#    runs-on: gkpvc
+#    timeout-minutes: 30
+#    strategy:
+#      # test everything, even if one fails
+#      fail-fast: false
+#      matrix:
+#        include:
+#        # - cxx: icpx
+#        - cxx: g++
+#    name: ${{ matrix.cxx }}
+#    env:
+#      CXX: ${{ matrix.cxx }}
+#    steps:
+#    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+#    - name: Generate
+#      run: cmake -B build
+#    - name: Build
+#      run: make -C build -j
+#    - name: Unit tests
+#      run: ctest --test-dir build -L TESTLABEL -j 4
+#    - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+#      if: always()
+#      with:
+#        name: log-gcc-${{ env.CXX }}
+#        path: |
+#          build/Testing
+#          build/test/gtest/mp/*.log
+#          build/benchmarks/gbench/mp/*.log
+#          build/examples/mp/*.log
+
+  pvc_unit_tests:
+    # runs-on: gkpvc
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      # test everything, even if one fails
+      fail-fast: false
+      matrix:
+        include:
+          # Disabled because it gets a timeout 1/2 the time
+          #- config: Debug
+          - config: Release
+    name: pvc-impi-icpx-${{ matrix.config }}
+    env:
+      CXX: icpx
+      FI_PROVIDER: tcp
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Set up Intel APT repository
+        run: |
+          # https://www.intel.com/content/www/us/en/docs/oneapi/installation-guide-linux/2024-0/apt.html
+          wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \
+          | gpg --dearmor | sudo tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null
+          echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt-get update -y
+      - name: Install oneAPI
+        run: sudo apt-get install intel-oneapi-compiler-dpcpp-cpp intel-oneapi-mkl-devel intel-hpckit -y
+      - name: Generate
+        run: |
+          . /opt/intel/oneapi/setvars.sh
+          cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+          printenv > build/envdump.txt
+      # change this step to building just tests once unittest job is back
+#     - name: Build everything
+#       run: |
+#         . /opt/intel/oneapi/setvars.sh
+#         make -C build -j
+      - name: Build tests
+        run: |
+          . /opt/intel/oneapi/setvars.sh
+          cmake --build build --target all-tests -- -j 4
+      - name: Unit tests
+        # run: srun -p cluster scripts/run_command_on_compute_node.sh build/Testing/tests.outerr.txt ctest --test-dir build -L TESTLABEL -j 4
+        run: |
+          . /opt/intel/oneapi/setvars.sh
+          ctest --test-dir build --output-on-failure -L TESTLABEL -j 4
+      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        if: always()
+        with:
+          name: log-pvc-impi-icpx-${{ matrix.config }}
+          path: |
+            build/CMakeCache.txt
+            build/envdump.txt
+            build/Testing
+            build/test/gtest/mp/*.log
+            build/benchmarks/gbench/mp/*.log
+            build/examples/mp/*.log
+            build/test/gtest/sp/*.log
+            build/benchmarks/gbench/sp/*.log
+            build/examples/sp/*.log
+
+# disabled due to DRA-164
+#  ishmem_unit_tests:
+#    runs-on: gkpvc
+#    timeout-minutes: 30
+#    strategy:
+#      # test everything, even if one fails
+#      fail-fast: false
+#      matrix:
+#        include:
+#          # Disabled because also gets a timeout
+#          # - config: Debug
+#          - config: Release
+#    name: ishmem-impi-icpx-${{ matrix.config }}
+#    env:
+#      CXX: icpx
+#    steps:
+#      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+#      - name: Generate
+#        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }} -DENABLE_ISHMEM=on -DENABLE_L0=on -DENABLE_OFI=on -DOFI_PROVIDER=psm3 -DONETILE_PVC=on
+#      - name: Build ISHMEM
+#        run: cmake --build build --target shmem -- -j
+#      - name: Build MP tests
+#        run: cmake --build build --target mp-tests mp-tests-3 -- -j
+#      - name: MP unit tests
+#        # run: srun -p cluster scripts/run_command_on_compute_node.sh build/Testing/mptests.outerr.txt ctest --test-dir build -R ^mp-tests-sycl -L MP -j 4
+#        run: ctest --test-dir build -R ^mp-tests-sycl -L MP -j 4
+#      - uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+#        if: always()
+#        with:
+#          name: log-ishmem-impi-icpx-${{ matrix.config }}
+#          path: |
+#            build/Testing
+#            build/test/gtest/mp/*.log
+#            build/benchmarks/gbench/mp/*.log
+#            build/examples/mp/*.log
+
+  package:
+    needs: []
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      CXX: g++-13
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - run: |
+        echo "creating DEB package is going to be here"
+
+  publish:
+    # needs: [checks, unit_tests, pvc_unit_tests, ishmem_unit_tests]
+    needs: [checks, pvc_unit_tests]
+    runs-on: intel-ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      SPHINXOPTS: -q -W
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+    - run: pip install -r requirements.txt
+    - name: Ubuntu dependencies
+      run: scripts/install-doxygen.sh
+    - name: Build doc
+      run: |
+        make -C doc/spec html
+    - name: Checkout gh-pages
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        ref: gh-pages
+        path: gh-pages
+    - name: Publish to github pages
+      run: |
+        rm -rf gh-pages/spec gh-pages/doxygen
+        touch gh-pages/.nojekyll
+
+        cp -r doc/spec/build/html gh-pages/spec
+        cp -r doc/spec/build/doxygen-html gh-pages/doxygen
+
+        cd gh-pages
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        # Ignore errors because no updates returns an error status.
+        git commit --reset-author --amend -m "Update from github actions"
+        git push --force origin gh-pages

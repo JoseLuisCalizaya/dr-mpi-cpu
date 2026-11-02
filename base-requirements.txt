@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Intel Corporation
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+# procedure of adding a new python package to our repo
+# 1. edit base-requirements.txt
+# 2. run scripts/regenerate-requirements-txt.sh
+# 3. review changes made in requirements.txt and if ok, commit changes
+
+# Testing
+pre-commit
+reuse
+
+# Documentation
+breathe
+sphinx
+sphinx-book-theme
+pydata-sphinx-theme
+
+sphinxcontrib-spelling

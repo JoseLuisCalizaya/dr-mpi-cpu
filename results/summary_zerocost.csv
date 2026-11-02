@@ -1,0 +1,10 @@
+benchmark,reference,dr_time_ms,ref_time_ms,overhead_pct,valid
+Fill_DR,Fill_Serial,0.987197,2.3471e-07,,False
+Copy_DR,Copy_Serial,4.37197,4.69363e-07,,False
+TransformIdentity_DR,TransformIdentity_Serial,4.45354,4.69969e-07,,False
+Mul_DR,Mul_Serial,6.10188,6.19641,-1.5255607682512904,True
+Inclusive_Scan_DR,Inclusive_Scan_Std,10.1257,10.129,-0.03257972159146426,True
+Exclusive_Scan_DR,Exclusive_Scan_Std,10.1281,37.9257,-73.29488974494868,True
+Stencil1D_Subrange_DR,Stencil1D_Subrange_Std,100.732,86.565,16.365736729625137,True
+Stencil2D_DR,Stencil2D_Loop_Serial,112.388,94.4421,19.002012873496046,True
+DRSortFixture/Sort_DR,StdSortFixture/Sort_Std,797.979,811.501,-1.6662949275478325,True

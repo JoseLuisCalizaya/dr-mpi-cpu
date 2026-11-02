@@ -1,0 +1,100 @@
+2026-11-01T14:10:18-05:00
+Running ./build/benchmarks/gbench/mp/mp-bench
+Run on (12 X 4390.41 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x6)
+  L1 Instruction 32 KiB (x6)
+  L2 Unified 512 KiB (x6)
+  L3 Unified 16384 KiB (x1)
+Load Average: 0.65, 1.24, 1.53
+default_repetitions: 1
+default_vector_size: 10000000
+device-memory: 0
+hostname: 
+lscpu: Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           48 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  12
+On-line CPU(s) list:                     0-11
+Vendor ID:                               AuthenticAMD
+Model name:                              AMD Ryzen 5 5625U with Radeon Graphics
+CPU family:                              25
+Model:                                   80
+Thread(s) per core:                      2
+Core(s) per socket:                      6
+Socket(s):                               1
+Stepping:                                0
+Microcode version:                       0xa500012
+Frequency boost:                         enabled
+CPU(s) scaling MHz:                      61%
+CPU max MHz:                             4390.4141
+CPU min MHz:                             423.1730
+BogoMIPS:                                4591.35
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca fsrm debug_swap
+Virtualization:                          AMD-V
+L1d cache:                               192 KiB (6 instances)
+L1i cache:                               192 KiB (6 instances)
+L2 cache:                                3 MiB (6 instances)
+L3 cache:                                16 MiB (1 instance)
+NUMA node(s):                            2
+NUMA node0 CPU(s):                       0-11
+NUMA node1 CPU(s):                       
+Vulnerability Gather data sampling:      Not affected
+Vulnerability Ghostwrite:                Not affected
+Vulnerability Indirect target selection: Not affected
+Vulnerability Itlb multihit:             Not affected
+Vulnerability L1tf:                      Not affected
+Vulnerability Mds:                       Not affected
+Vulnerability Meltdown:                  Not affected
+Vulnerability Mmio stale data:           Not affected
+Vulnerability Old microcode:             Not affected
+Vulnerability Reg file data sampling:    Not affected
+Vulnerability Retbleed:                  Not affected
+Vulnerability Spec rstack overflow:      Mitigation; Safe RET
+Vulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl
+Vulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP always-on; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected
+Vulnerability Srbds:                     Not affected
+Vulnerability Tsa:                       Mitigation; Clear CPU buffers
+Vulnerability Tsx async abort:           Not affected
+Vulnerability Vmscape:                   Mitigation; IBPB before exit to userspace
+
+numactl: available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11
+node 0 size: 5962 MB
+node 0 free: 1274 MB
+node 1 cpus:
+node 1 size: 3840 MB
+node 1 free: 3740 MB
+node distances:
+node     0    1 
+   0:   10   20 
+   1:   20   10 
+
+rank: 0
+ranks: 1
+weak-scaling: 0
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message,"footprint"
+"DotProduct_DR/min_time:0.100/min_warmup_time:0.100/real_time_mean",5,5.05919,5.05878,ms,3.16515e+10,,,,,1.6e+08
+"DotProduct_DR/min_time:0.100/min_warmup_time:0.100/real_time_median",5,5.11715,5.11719,ms,3.12674e+10,,,,,1.6e+08
+"DotProduct_DR/min_time:0.100/min_warmup_time:0.100/real_time_stddev",5,0.159276,0.159111,ms,1.02922e+09,,,,,1.3328
+"DotProduct_DR/min_time:0.100/min_warmup_time:0.100/real_time_cv",5,0.0314825,0.0314525,,0.0325173,,,,,8.33e-09
+"Inclusive_Scan_DR/min_time:0.100/min_warmup_time:0.100/real_time_mean",5,10.3078,10.3067,ms,7.76118e+09,,,,,8e+07
+"Inclusive_Scan_DR/min_time:0.100/min_warmup_time:0.100/real_time_median",5,10.3055,10.3036,ms,7.76282e+09,,,,,8e+07
+"Inclusive_Scan_DR/min_time:0.100/min_warmup_time:0.100/real_time_stddev",5,0.0241766,0.0236914,ms,1.8173e+07,,,,,0.6664
+"Inclusive_Scan_DR/min_time:0.100/min_warmup_time:0.100/real_time_cv",5,0.00234548,0.00229865,,0.00234152,,,,,8.33e-09
+"Stream_Triad_DR/min_time:0.100/min_warmup_time:0.100/real_time_mean",5,6.92478,6.92374,ms,1.73303e+10,,,,,1.2e+08
+"Stream_Triad_DR/min_time:0.100/min_warmup_time:0.100/real_time_median",5,6.90373,6.9037,ms,1.73819e+10,,,,,1.2e+08
+"Stream_Triad_DR/min_time:0.100/min_warmup_time:0.100/real_time_stddev",5,0.0647576,0.0648137,ms,1.61347e+08,,,,,0.9996
+"Stream_Triad_DR/min_time:0.100/min_warmup_time:0.100/real_time_cv",5,0.00935157,0.00936108,,0.0093101,,,,,8.33e-09
+"GemvEq_DR/min_time:0.100/min_warmup_time:0.100/real_time_mean",5,46.0172,45.9494,ms,,,,,,
+"GemvEq_DR/min_time:0.100/min_warmup_time:0.100/real_time_median",5,45.8972,45.8939,ms,,,,,,
+"GemvEq_DR/min_time:0.100/min_warmup_time:0.100/real_time_stddev",5,0.371657,0.249785,ms,,,,,,
+"GemvEq_DR/min_time:0.100/min_warmup_time:0.100/real_time_cv",5,0.00807648,0.00543608,,,,,,,
+"BlackScholes_DR/min_time:0.100/min_warmup_time:0.100/real_time_mean",5,217.722,217.67,ms,9.1866e+08,,,,,2e+08
+"BlackScholes_DR/min_time:0.100/min_warmup_time:0.100/real_time_median",5,216.809,216.748,ms,9.2247e+08,,,,,2e+08
+"BlackScholes_DR/min_time:0.100/min_warmup_time:0.100/real_time_stddev",5,1.90761,1.89679,ms,7.95692e+06,,,,,1.666
+"BlackScholes_DR/min_time:0.100/min_warmup_time:0.100/real_time_cv",5,0.00876171,0.00871404,,0.00866144,,,,,8.33e-09
